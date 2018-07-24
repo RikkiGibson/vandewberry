@@ -11,7 +11,6 @@ let port = 5001; // process.env.PORT ||
 const uri = process.env.MONGODB_URI;
 
 const MongoClient = require('mongodb').MongoClient;
-const testProd = true;
 
 let testProd = false;
 

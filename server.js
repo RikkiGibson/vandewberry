@@ -10,6 +10,9 @@ const port = 5001; // process.env.PORT ||
 const uri = process.env.MONGODB_URI;
 const MongoClient = require('mongodb').MongoClient;
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('build'));
+}
 
 MongoClient.connect(uri, (err, client) => {
   if (err) {

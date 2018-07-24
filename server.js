@@ -9,8 +9,9 @@ app.use(bodyParser.json());
 const port = 5001; // process.env.PORT || 
 const uri = process.env.MONGODB_URI;
 const MongoClient = require('mongodb').MongoClient;
+const testProd = true;
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || testProd) {
   app.use(express.static('build'));
 }
 

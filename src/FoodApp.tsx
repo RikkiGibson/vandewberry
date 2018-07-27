@@ -10,6 +10,7 @@ export interface IRecipeRepo {
     state: { recipes: Recipe[] };
     deleteRecipe(recipe: Recipe): void;
     saveRecipe(recipe: Recipe): void;
+    refresh(): void;
 }
 
 export interface IIngredientRepo {
@@ -18,6 +19,7 @@ export interface IIngredientRepo {
     purchaseIngredient(ingredient: Ingredient): void;
     useUpIngredient(ingredient: Ingredient): void;
     saveIngredient(ingredient: Ingredient): void;
+    refresh(): void;
 }
 
 export class FoodApp extends React.Component<{}, { recipes: Recipe[], ingredients: Ingredient[] }> implements IRecipeRepo, IIngredientRepo {
@@ -25,6 +27,17 @@ export class FoodApp extends React.Component<{}, { recipes: Recipe[], ingredient
         super(props);
         this.state = { recipes: [], ingredients: [] };
 
+        this.deleteRecipe = this.deleteRecipe.bind(this);
+        this.saveRecipe = this.saveRecipe.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.refresh = this.refresh.bind(this);
+    }
+
+    public componentDidMount() {
+        this.refresh();
+    }
+    // TODO: Consider splitting this refresh between recipes and ingredients
+    public refresh() {
         Database.GetRecipes()
             .then((data: any) => {
                 this.setState({
@@ -38,9 +51,6 @@ export class FoodApp extends React.Component<{}, { recipes: Recipe[], ingredient
                     ingredients: data.map((item: any) => new Ingredient(item))
                 });
             });
-
-        this.deleteRecipe = this.deleteRecipe.bind(this);
-        this.saveRecipe = this.saveRecipe.bind(this);
     }
 
     public async deleteRecipe(recipe: Recipe) {

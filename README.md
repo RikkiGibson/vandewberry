@@ -10,27 +10,27 @@ You can find the most recent version of this guide [here](https://github.com/fac
 
 ## Deploying To Production
 
-1. Merge master into dev:
+1. Merge master into prod:
 git checkout master
 git pull master
-git checkout dev
-git pull dev
+git checkout prod
+git pull prod
 git merge master
 *** resolve conflicts ***
 npm run build
 git add *
 git commit -m "ran build"
 heroku git:remote -a project
-git push heroku master
+git push heroku prod:master
 
 ## Running Locally
 you'll need two command windows
 
 in one, run:
-npm start
+npm run start
 
 in the other, run:
-nodemon server.js
+heroku local web
 
 One will start the create-react-app fanciness for local development of the client; the other will
 start nodemon for local development of the server. In production, only the server is run and it

@@ -5,9 +5,10 @@ import { Grid, Row, Col, Panel, Modal, Button } from "react-bootstrap";
 import { Recipe } from "../models/recipe";
 import { Material } from "../models/material";
 import { RecipeEditView } from "./recipeeditview";
-import { FaTimesCircle, FaPencil, FaPlus, FaSearch } from "react-icons/lib/fa"
+import { FaTimesCircle, FaPencil, FaPlus, FaSearch, FaShoppingCart } from "react-icons/lib/fa"
 import { IRecipeRepo, IIngredientRepo } from "../FoodApp";
 import { Ingredient } from "../models/ingredient";
+import { compareIngredients } from "../utils/utils";
 
 export class RecipesView extends React.Component<{ repo: IIngredientRepo & IRecipeRepo }, { editing: boolean, editRecipe: Recipe, searchQuery: string }> {
 
@@ -21,6 +22,7 @@ export class RecipesView extends React.Component<{ repo: IIngredientRepo & IReci
         this.mapRecipesToRows = this.mapRecipesToRows.bind(this);
         this.getAllSearchedRecipes = this.getAllSearchedRecipes.bind(this);
         this.searchRecipes = this.searchRecipes.bind(this);
+        this.addIngredientsToCart = this.addIngredientsToCart.bind(this);
     }
 
     private searchInput: any;
@@ -47,6 +49,40 @@ export class RecipesView extends React.Component<{ repo: IIngredientRepo & IReci
                 );
             });
     }
+
+    private addIngredientsToCart(materials: Material[]) {
+        // 1. Filter list of materials to those which are made exclusively of ingredients not in the inventory
+        // 2. Add the first ingredient of each of those to the shopping list
+            // Moving an existing ingredient if possible
+            // Creating an ingredient if not possible
+
+        // For each material:
+        //   find the subset of the material's ingredients have an existing archived match in the database
+        //   grab the first of these, 
+
+        let inventoryOrShopping = this.props.repo.state.ingredients.filter((i: Ingredient) => i.status !== 'archived');
+        let archivedIngredients = this.props.repo.state.ingredients.filter((i: Ingredient) => i.status === 'archived');
+
+        let neededMaterials = materials.filter((m: Material) => !m.isAvailable(inventoryOrShopping));
+
+        neededMaterials.forEach((m: Material) => {
+            // if the material can be fullfilled by an existing ingredient, we'll use that.
+            // oh btw we know that we only have to look in the archive to find those, because
+            // it wasn't in inventory or shopping
+            let firstExistingMatch = archivedIngredients.find((ai: Ingredient) => m.ingredients.some((i: Ingredient) => compareIngredients(i, ai)));
+
+            if(firstExistingMatch) {
+                firstExistingMatch.status = 'shopping';
+                this.props.repo.saveIngredient(firstExistingMatch);
+            } else {
+                let ingredient = new Ingredient(m.ingredients[0]);
+                ingredient._id = undefined;
+                ingredient.status = 'shopping';
+                this.props.repo.saveIngredient(ingredient);
+            }
+        });
+    }
+
     private mapRecipesToRows(recipes: Recipe[]) {
         return recipes
             .sort((recipe1: Recipe, recipe2: Recipe) => {
@@ -68,6 +104,10 @@ export class RecipesView extends React.Component<{ repo: IIngredientRepo & IReci
                                     }} />
                                 {/* <a className="pull-left glyphicon glyphicon-pencil glyph-button" data-bind="click: function() {edit_recipe($data.id)}" data-target="#add_recipe_modal"
                                 data-toggle="modal"></a> */}
+                                <FaShoppingCart
+                                    className="pull-left"
+                                    onClick={() => {this.addIngredientsToCart(recipe.materials)}}
+                                />
                                 {recipe.name}
                                 <FaTimesCircle className="pull-right" onClick={() => { this.props.repo.deleteRecipe(recipe) }} />
                             </Panel.Toggle>

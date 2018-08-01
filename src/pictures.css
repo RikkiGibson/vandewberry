@@ -21,10 +21,7 @@
 
 /* Expanding image text */
 .imgtext {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-  color: white;
+  color: black;
   font-size: 20px;
 }
 
@@ -36,4 +33,8 @@
   color: white;
   font-size: 35px;
   cursor: pointer;
+}
+
+.subnav {
+  margin-top: -20px;
 }

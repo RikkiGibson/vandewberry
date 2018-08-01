@@ -96,24 +96,33 @@ export class RecipesView extends React.Component<{ repo: IIngredientRepo & IReci
                     <Row className="recipe-row" key={recipe._id}>
                         <Panel defaultExpanded={false} className='no-border'>
                             <Panel.Toggle componentClass="a" className="no-border btn btn-block btn-secondary">
-                                <FaPencil
-                                    className="pull-left"
-                                    onClick={(e: any) => {
-                                        e.stopPropagation();
-                                        this.setState({ editRecipe: recipe, editing: true })
-                                    }} />
-                                {/* <a className="pull-left glyphicon glyphicon-pencil glyph-button" data-bind="click: function() {edit_recipe($data.id)}" data-target="#add_recipe_modal"
-                                data-toggle="modal"></a> */}
-                                <FaShoppingCart
-                                    className="pull-left"
-                                    onClick={() => {this.addIngredientsToCart(recipe.materials)}}
-                                />
                                 {recipe.name}
-                                <FaTimesCircle className="pull-right" onClick={() => { this.props.repo.deleteRecipe(recipe) }} />
                             </Panel.Toggle>
-                            <Panel.Collapse>
+                            <Panel.Collapse>  
                                 <div id={'possible_recipe_details_' + recipe._id}>
                                     <ul className="list-group well">
+                                        <li className="button-container">
+                                            <button className='btn-row'
+                                                onClick={(e: any) => {
+                                                    e.stopPropagation();
+                                                    this.setState({ editRecipe: recipe, editing: true })
+                                            }}>
+                                                <FaPencil/>
+                                            </button>
+                                            <button className='btn-row'
+                                                onClick={() => {this.addIngredientsToCart(recipe.materials)}}
+                                            >
+                                                <FaShoppingCart/>
+                                            </button>
+                                            <button className='btn-row'
+                                                onClick={() => {
+                                                    if(confirm('Delete this recipe?'))
+                                                    {this.props.repo.deleteRecipe(recipe)}
+                                            }}>
+                                                <FaTimesCircle 
+                                                    />
+                                            </button>
+                                        </li>
                                         <li className="list-group-item list-group-item-info">
                                             {recipe.description}
                                         </li>
@@ -217,7 +226,7 @@ export class RecipesView extends React.Component<{ repo: IIngredientRepo & IReci
                                         onClick={() => {
                                             this.searchInput.focus();
                                         }}
-                                        className="pull-right btn-circle classy-btn search-btn">
+                                        className={"pull-right btn-circle classy-btn search-btn" + ((this.state.searchQuery.length > 0) ? " search-btn-open" : "")}>
 
                                         <input placeholder="search" ref={(input) => { this.searchInput = input }} onChange={this.searchRecipes} />
                                         <FaSearch size={15} className="pull-right" style={{ marginRight: '7px' }} />

@@ -156,7 +156,6 @@ checkbox {
   text-align: center;
   font-size: 10px;
   line-height: 1.42857;
-  margin-top: 25%;
 }
 
 .classy-btn {
@@ -242,4 +241,18 @@ div.clearfix a{
 
 div.clearfix li:active{
   box-shadow: inset 0 1px 2px #C8CCD4;
+}
+
+.vertical-bar{
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  float: left;
+}
+
+.ingredient-block{
+  float: right;
+}
+
+.groupBox {
+  border: 5px;
 }

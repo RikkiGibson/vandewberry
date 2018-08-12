@@ -17,9 +17,6 @@ git checkout prod
 git pull prod
 git merge master
 *** resolve conflicts ***
-npm run build
-git add *
-git commit -m "ran build"
 heroku git:remote -a project
 git push heroku prod:master
 
@@ -27,7 +24,7 @@ git push heroku prod:master
 you'll need two command windows
 
 in one, run:
-npm run start
+npm run local-start
 
 in the other, run:
 heroku local web

@@ -24,6 +24,7 @@
     "session": "^0.1.0"
   },
   "scripts": {
+    "local-start": "react-scripts-ts start",
     "start": "node server.js",
     "preinstall": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
